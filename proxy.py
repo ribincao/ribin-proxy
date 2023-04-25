@@ -22,7 +22,7 @@ class Proxy(object):
 
     async def run_server(self):
         async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
-            # TODO: 发起连接
+            # TODO: 首包拆包, 发起连接
             remote_reader, remote_writer = await self.connect("xxx", 0000)
 
             await asyncio.gather(
@@ -38,6 +38,7 @@ class Proxy(object):
 
     async def run_client(self):
         remote_reader, remote_writer = await self.connect("xxxx", 8888)  # 连接server
+        # TODO: 封装首包
 
         async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
             await asyncio.gather(
