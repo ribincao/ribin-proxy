@@ -4,10 +4,11 @@ from logger import logger
 
 
 class Server(object):
+    SERVER_PORT = 8888
 
     def __init__(self):
         self._loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
-        self._proxy: Proxy = Proxy(8888)
+        self._proxy: Proxy = Proxy(self.SERVER_PORT)
 
     def run(self):
         # self._loop.create_task(self._proxy.run_server())

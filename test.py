@@ -3,8 +3,6 @@ from typing import Tuple
 import asyncio
 
 
-
-
 class Test(object):
 
     def __init__(self, port: int,):
@@ -14,10 +12,15 @@ class Test(object):
         reader, writer = await self.connect("localhost", self._port)  # 连接server
 
         async def test_message(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-            while True:
-                data = b"hello"
-                writer.write(data)
-                await asyncio.sleep(1)
+            try:
+                while True:
+                    data = b"hello"
+                    logger.info(f"Test Send {data}")
+                    writer.write(data)
+                    await asyncio.sleep(1)
+            except Exception as error:
+                logger.error(f"{error}")
+                writer.close()
 
         await test_message(reader, writer)
 

@@ -7,13 +7,15 @@ async def transport(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     try:
         while True:
             data = await reader.read(1024)
-            logger.info(f"transport data: {data}")
             if not data:
                 break
+            logger.info(f"transport data: {data}")
             writer.write(data)
             # await writer.drain()
+        logger.info(f"Connection Closed.")
     except Exception as error:
         logger.error(f"handle_tcp error {error}")
+        writer.close()
 
 
 class Proxy(object):
@@ -29,6 +31,9 @@ class Proxy(object):
                 if not data:
                     break
                 logger.info(f"Test Server Receive {data}")
+            local_writer.close()
+            logger.info(f"Connection Closed.")
+
         server = await asyncio.start_server(test_call_back, port=self._port)
         logger.info(f"Test ShadowSocks Server started on {server.sockets[0].getsockname()}")
         async with server:
@@ -37,6 +42,7 @@ class Proxy(object):
     async def run_server(self):
         async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
             # TODO: 首包拆包, 发起连接
+            logger.info(f"[Server] Connected.")
             remote_reader, remote_writer = await self.connect("xxx", 0000)
 
             await asyncio.gather(

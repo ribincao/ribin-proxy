@@ -1,4 +1,5 @@
 import logging
+import signal
 import sys
 import os
 
@@ -80,8 +81,22 @@ class Logger(Singleton):
         self._logger.error(msg, stack_info=True)
 
 
-logger = Logger()
+def signal_handler():
+    import warnings
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+    def receive_signal(signum, stack):
+        logger.warning(f"Program exit {signum} {stack}")
+        exit(-1)
+    signal.signal(signal.SIGQUIT, receive_signal)
+    signal.signal(signal.SIGINT, receive_signal)
+    signal.signal(signal.SIGTERM, receive_signal)
+    signal.signal(signal.SIGABRT, receive_signal)
+    signal.signal(signal.SIGSEGV, receive_signal)
+
+
+signal_handler()
+logger = Logger()
 
 if __name__ == "__main__":
     logger.init_logger()
