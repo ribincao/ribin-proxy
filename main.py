@@ -30,7 +30,7 @@ class Connection(object):
             self.close()
 
 
-class TcpServer(object):
+class PyShadow(object):
 
     def __init__(self, port: int,):
         self._port: int = port
@@ -60,7 +60,7 @@ class TcpServer(object):
 if __name__ == '__main__':
     logger.init_logger()
 
-    s = TcpServer(8888)
+    s = PyShadow(8888)
     loop = asyncio.get_event_loop()
     loop.create_task(s.run_server())
     loop.run_forever()
