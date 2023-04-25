@@ -1,7 +1,16 @@
-from singleton import Singleton
 import logging
 import sys
 import os
+
+
+class Singleton(object):
+    _inst = None
+
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls._inst, cls):
+            cls._inst = object.__new__(cls)
+        return cls._inst
+
 
 LOG_NAME = "shadowsocks"
 LOG_MODE_FILE = "file"
@@ -39,7 +48,7 @@ class Logger(Singleton):
     @staticmethod
     def format_msg(msg):
         try:
-            caller = sys._getframe(2)
+            caller = sys._getframe(1)
             file_name = '/'.join(caller.f_code.co_filename.split('/')[-3:])
             call_name, file_no = caller.f_code.co_name, caller.f_lineno
             return ':'.join([file_name, call_name, str(file_no)]) + f'|{msg}'
