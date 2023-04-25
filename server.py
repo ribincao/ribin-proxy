@@ -11,12 +11,14 @@ class TcpServer(object):
 
     async def run_server(self):
         async def handle_client(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
+            # TODO: 发起连接
             remote_reader, remote_writer = await self.connect("xxx", 0000)
+
             connection_local = Connection(local_reader, remote_writer)
             connection_remote = Connection(remote_reader, local_writer)
             await asyncio.gather(
-                    connection_local.handle_message(),
-                    connection_remote.handle_message(),
+                    connection_local.handle_tcp(),
+                    connection_remote.handle_tcp(),
                     )
 
         server = await asyncio.start_server(handle_client, port=self._port)
