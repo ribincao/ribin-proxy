@@ -11,8 +11,7 @@ class Server(object):
         self._proxy: Proxy = Proxy(self.SERVER_PORT)
 
     def run(self):
-        # self._loop.create_task(self._proxy.run_server())
-        self._loop.create_task(self._proxy.test_server())
+        self._loop.create_task(self._proxy.run_server())
         self._loop.run_forever()
 
 

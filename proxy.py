@@ -41,24 +41,8 @@ async def transport(conn_1: Connection, conn_2: Connection):
 
 class Proxy(object):
 
-    def __init__(self, port: int,):
+    def __init__(self, port: int):
         self._port: int = port
-
-    async def test_server(self):
-        async def test_call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
-            logger.info(f"[TestServer] Connected.")
-            while True:
-                data = await local_reader.read(1024)
-                if not data:
-                    break
-                logger.info(f"Test Server Receive {data}")
-            local_writer.close()
-            logger.info(f"Connection Closed.")
-
-        server = await asyncio.start_server(test_call_back, port=self._port)
-        logger.info(f"Test ShadowSocks Server started on {server.sockets[0].getsockname()}")
-        async with server:
-            await server.serve_forever()
 
     async def run_server(self):
         async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
