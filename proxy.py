@@ -33,8 +33,9 @@ async def transport(conn_1: Connection, conn_2: Connection):
                 break
             logger.info(f"transport data: {data}")
             await conn_2.write(data)
-        conn_1.close()
 
+        if not conn_1.is_remote:
+            conn_1.close()
     except Exception as error:
         logger.error(f"tranport error {error}")
 
@@ -45,13 +46,13 @@ class Proxy(object):
         self._port: int = port
 
     async def run_server(self):
-        async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
+        async def call_back(remote_reader: asyncio.StreamReader, remote_writer: asyncio.StreamWriter):
             # TODO: 首包拆包, 发起连接
             logger.info(f"[Server] Connected.")
-            remote_reader, remote_writer = await self.connect("xxx", 0000)
+            local_reader, local_writer = await self.connect("xxx", 0000)
 
-            remote_conn = Connection(remote_reader, remote_writer)
             local_conn = Connection(local_reader, local_writer)
+            remote_conn = Connection(remote_reader, remote_writer, is_remote=True)
 
             await asyncio.gather(
                     transport(local_conn, remote_conn),
@@ -71,7 +72,7 @@ class Proxy(object):
         async def call_back(local_reader: asyncio.StreamReader, local_writer: asyncio.StreamWriter):
             logger.info(f"[Client] Connected.")
 
-            remote_conn = Connection(remote_reader, remote_writer)
+            remote_conn = Connection(remote_reader, remote_writer, is_remote=True)
             local_conn = Connection(local_reader, local_writer)
             await asyncio.gather(
                     transport(local_conn, remote_conn),
