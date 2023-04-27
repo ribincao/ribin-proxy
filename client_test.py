@@ -6,7 +6,7 @@ TEST_CLIENT_PORT = 8088
 
 
 async def test_client():
-    reader, writer = await asyncio.open_connection("localhost", TEST_CLIENT_PORT)
+    _, writer = await asyncio.open_connection("localhost", TEST_CLIENT_PORT)
     try:
         while True:
             data = b"hello"
