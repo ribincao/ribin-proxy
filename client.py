@@ -1,6 +1,6 @@
 import asyncio
 from proxy import Proxy
-from logger import logger
+from .logger import logger
 
 
 class Client(object):

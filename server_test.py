@@ -1,5 +1,5 @@
 import asyncio
-from logger import logger
+from .logger import logger
 
 
 TEST_SERVER_PORT = 8888
